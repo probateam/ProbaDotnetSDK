@@ -1,4 +1,5 @@
 ﻿using ProbaDotnetSDK.Services;
+using ProbaDotnetSDK.SharedClasses;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,25 @@ namespace ProbaDotnetSDK.Client
         private string ProjectId { get; }
         private string BaseURL { get; }
         private HmacService HmacService { get; }
+        private int APIVersion { get; }
+        private CancellationTokenSource CancellationTokenSource { get; }
 
+        public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> StartSessionAsync(StartSessionViewModel startSessionViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/SessionStart/{ProjectId}", startSessionViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode, content.FromJson<CreateSessionResponseModel>());
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-        private async Task<(HttpStatusCode statusCode, string content)> PostJsonRequestAsync(string url, string message, CancellationTokenSource cts)
+        private async Task<(bool sucess, HttpStatusCode statusCode, string content)> PostJsonRequestAsync(string url, string message, CancellationTokenSource cts)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
@@ -36,7 +53,7 @@ namespace ProbaDotnetSDK.Client
                     Logger.Warning("Unsuccessfull http request response for request {URL} with {statusCode} statuscode and response: {serverResponse}", url, response.StatusCode, content);
                 }
 
-                return (response.StatusCode, content);
+                return (response.IsSuccessStatusCode, response.StatusCode, content);
             }
             catch (Exception ex)
             {
