@@ -52,6 +52,21 @@ namespace ProbaDotnetSDK.Client
             }
         }
 
+        public async Task<(bool sucess, HttpStatusCode statusCode)> AchievementEvent(AchievementEventViewModel achievementEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Achievement/{ProjectId}", achievementEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private async Task<(bool sucess, HttpStatusCode statusCode, string content)> PostJsonRequestAsync(string url, string message, CancellationTokenSource cts)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url)
