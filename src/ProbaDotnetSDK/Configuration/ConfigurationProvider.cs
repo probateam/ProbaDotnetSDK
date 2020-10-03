@@ -12,7 +12,7 @@ namespace ProbaDotnetSDK.Configuration
         private ILogger Logger { get; }
         public ConfigurationModel Configuration { get; private set; }
 
-        public async Task<bool> LoadConfigurationAsync(string name = "appsettings.json")
+        public async Task<bool> LoadConfigurationAsync(string name = "./Configuration/appsettings.json")
         {
             if (!File.Exists(name)) return false;
             try
@@ -32,7 +32,7 @@ namespace ProbaDotnetSDK.Configuration
             }
         }
 
-        public async Task SaveConfgurationAsync(ConfigurationModel config, string name = "appsettings.json")
+        public async Task SaveConfgurationAsync(ConfigurationModel config, string name = "./Configuration/appsettings.json")
         {
             try
             {
