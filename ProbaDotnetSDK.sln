@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{75676D4A-9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProbaDotnetSDK", "src\ProbaDotnetSDK\ProbaDotnetSDK.csproj", "{48AFEF39-4E28-4C2D-A497-EE2CEEFECE08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTest\UnitTests.csproj", "{89C04B9F-3B27-478C-B8B3-A04D1BE3689D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTest\UnitTests.csproj", "{89C04B9F-3B27-478C-B8B3-A04D1BE3689D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devTest", "devTest", "{36B1CC6F-2B37-4BB0-A457-0D27A99FFB48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
