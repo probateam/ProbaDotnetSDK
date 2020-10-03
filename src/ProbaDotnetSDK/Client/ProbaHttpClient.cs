@@ -52,7 +52,7 @@ namespace ProbaDotnetSDK.Client
             }
         }
 
-        public async Task<(bool sucess, HttpStatusCode statusCode)> AchievementEvent(AchievementEventViewModel achievementEventViewModel)
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendAchievementEventAsync(AchievementEventViewModel achievementEventViewModel)
         {
             try
             {
