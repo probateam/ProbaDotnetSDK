@@ -29,5 +29,8 @@ namespace ProbaDotnetSDK.SharedClasses
         public string Custom5 { get; set; }
 
         public long ClientTs { get; set; }
+        public double Battery { get; set; }
+
+        public bool Charging { get; set; }
     }
 }

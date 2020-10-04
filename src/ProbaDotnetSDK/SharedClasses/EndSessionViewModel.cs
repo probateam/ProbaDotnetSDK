@@ -18,5 +18,7 @@ namespace ProbaDotnetSDK.SharedClasses
 
         public string ErrorData { get; set; }
         public List<string> Exceptions { get; set; }
+
+        public double Battery { get; set; }
     }
 }
