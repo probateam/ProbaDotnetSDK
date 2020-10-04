@@ -97,6 +97,81 @@ namespace ProbaDotnetSDK.Client
             }
         }
 
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendContentViewEventAsync(ContentViewEventViewModel contentViewEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/ContentViewEvent/{ProjectId}", contentViewEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendDesignEventAsync(DesignEventViewModel designEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/DesignEvent/{ProjectId}", designEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendProgressionEventAsync(ProgressionEventViewModel progressionEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/ProgressionEvent/{ProjectId}", progressionEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendSocialEventAsync(SocialEventViewModel socialEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/SocialEvent/{ProjectId}", socialEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendTapEventAsync(TapEventViewModel tapEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/TapEvent/{ProjectId}", tapEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private async Task<(bool sucess, HttpStatusCode statusCode, string content)> PostJsonRequestAsync(string url, string message, CancellationTokenSource cts)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url)
