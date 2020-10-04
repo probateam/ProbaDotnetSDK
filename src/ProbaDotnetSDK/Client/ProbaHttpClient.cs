@@ -22,6 +22,11 @@ namespace ProbaDotnetSDK.Client
         private int APIVersion { get; }
         private CancellationTokenSource CancellationTokenSource { get; }
 
+        public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> GetRemoteConfigurationsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> StartSessionAsync(StartSessionViewModel startSessionViewModel)
         {
             try
