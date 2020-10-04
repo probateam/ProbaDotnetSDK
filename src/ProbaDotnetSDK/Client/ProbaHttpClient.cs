@@ -56,7 +56,7 @@ namespace ProbaDotnetSDK.Client
         {
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Achievement/{ProjectId}", achievementEventViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/AchievementEvent/{ProjectId}", achievementEventViewModel.ToJson(), CancellationTokenSource);
                 if (sucess) return (sucess, statusCode);
                 //TODO: handdle errors
                 return (default, statusCode);
@@ -71,7 +71,22 @@ namespace ProbaDotnetSDK.Client
         {
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Advertisement/{ProjectId}", advertisementEventViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/AdvertisementEvent/{ProjectId}", advertisementEventViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SendBusinessEventAsync(BusinessEventViewModel businessEventViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/BusinessEvent/{ProjectId}", businessEventViewModel.ToJson(), CancellationTokenSource);
                 if (sucess) return (sucess, statusCode);
                 //TODO: handdle errors
                 return (default, statusCode);
