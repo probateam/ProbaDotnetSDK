@@ -22,9 +22,25 @@ namespace ProbaDotnetSDK.Client
         private int APIVersion { get; }
         private CancellationTokenSource CancellationTokenSource { get; }
 
-        public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> GetRemoteConfigurationsAsync()
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<RemoteConfigurationsViewModel> remoteConfigurations)> GetRemoteConfigurationsAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/RemoteConfigurations/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode, content.FromJson<IList<RemoteConfigurationsViewModel>>());
+                    return (sucess, statusCode, default);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> StartSessionAsync(StartSessionViewModel startSessionViewModel)
