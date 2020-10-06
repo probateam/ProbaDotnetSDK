@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProbaDotnetSDK.SharedEnums;
+using System;
 
 namespace ProbaDotnetSDK.SharedClasses
 {
@@ -14,7 +15,7 @@ namespace ProbaDotnetSDK.SharedClasses
         public string Device { get; set; }
         public string SDKVersion { get; set; }
         public string Manufacturer { get; set; }
-        public string Platform { get; set; }
+        public EPlatforms Platform { get; set; }
         public bool ProbaGameCenter { get; set; }
         public bool LogOnGooglePlay { get; set; }
         public string Engine { get; set; }
