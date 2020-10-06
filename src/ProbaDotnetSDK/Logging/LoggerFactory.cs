@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,10 +8,11 @@ namespace ProbaDotnetSDK.Logging
 {
     internal class LoggerFactory : IDisposable
     {
-        public static ILogger CreateLogger(string filePath = @"./logs/")
+        public LogEventLevel LogLevel { get; set; } = LogEventLevel.Information;
+        public static ILogger CreateLogger(LogEventLevel logLevel, string filePath = @"./logs/")
         {
             var log = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .MinimumLevel.Is(logLevel)
                 .WriteTo.File(filePath)
                 .CreateLogger();
             return log;
@@ -20,7 +22,7 @@ namespace ProbaDotnetSDK.Logging
         {
             get
             {
-                if (Log.Logger is null) Log.Logger = CreateLogger();
+                if (Log.Logger is null) Log.Logger = CreateLogger(LogLevel);
                 return Log.Logger;
             }
         }
