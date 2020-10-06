@@ -22,8 +22,9 @@ namespace ProbaDotnetSDK.Scheduler
         public bool Initialized { get; }
         private bool Finalized { get; set; }
         private List<(int count, bool success, HttpStatusCode statusCode)> Responses { get; }
+        private int DelayTime { get; }
 
-        public AsyncTaskScheduler(CancellationTokenSource cancellationTokenSource, ProbaHttpClient probaClient)
+        public AsyncTaskScheduler(CancellationTokenSource cancellationTokenSource, ProbaHttpClient probaClient, int delayTime = 500)
         {
             TaskList = new ConcurrentQueue<TaskOrder>();
             Semaphore = new SemaphoreSlim(0);
@@ -33,6 +34,7 @@ namespace ProbaDotnetSDK.Scheduler
             Initialized = true;
             Responses = new List<(int count, bool success, HttpStatusCode statusCode)>();
             Finalized = false;
+            DelayTime = delayTime;
         }
 
         public void Schedule(TaskOrder order)
@@ -91,6 +93,10 @@ namespace ProbaDotnetSDK.Scheduler
                         case TaskType.SendTapEvent:
                             (sucess, statusCode) = await ProbaClient.SendTapEventAsync(job.Tap);
                             break;
+                        case TaskType.Wait:
+                            await Task.Delay(DelayTime);
+                            (sucess, statusCode) = (true, HttpStatusCode.NotFound);
+                            break;
                         default:
                             (sucess, statusCode) = (true, HttpStatusCode.NotFound);
                             break;
@@ -109,7 +115,7 @@ namespace ProbaDotnetSDK.Scheduler
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
             if (!CancellationTokenSource.IsCancellationRequested) throw new InvalidOperationException("First you need to cancel all the running tasks");
             Finalized = true;
-            return (TaskList.ToList(), Exceptions, Responses);
+            return (TaskList.Where(x => x.Type != TaskType.Wait).ToList(), Exceptions, Responses);
         }
 
         public void Dispose()

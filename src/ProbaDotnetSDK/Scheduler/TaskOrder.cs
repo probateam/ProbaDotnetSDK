@@ -14,7 +14,8 @@ namespace ProbaDotnetSDK.Scheduler
         SendDesignEvent,
         SendProgressionEvent,
         SendSocialEvent,
-        SendTapEvent
+        SendTapEvent,
+        Wait
     }
     internal class TaskOrder
     {
