@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,32 +12,33 @@ using System.Threading.Tasks;
 
 namespace ProbaDotnetSDK.Scheduler
 {
-    internal class AsyncTaskScheduler
+    internal class AsyncTaskScheduler : IDisposable
     {
         private ConcurrentQueue<TaskOrder> TaskList { get; }
-        private int ConcurrencyLevel { get; }
         private SemaphoreSlim Semaphore { get; }
         private CancellationTokenSource CancellationTokenSource { get; }
         private ProbaHttpClient ProbaClient { get; }
         public List<Exception> Exceptions { get; private set; }
         public bool Initialized { get; }
+        private bool Finalized { get; set; }
         private List<(int count, bool success, HttpStatusCode statusCode)> Responses { get; }
 
-        public AsyncTaskScheduler(int concurrencyLevel, CancellationTokenSource cancellationTokenSource, ProbaHttpClient probaClient)
+        public AsyncTaskScheduler(CancellationTokenSource cancellationTokenSource, ProbaHttpClient probaClient)
         {
             TaskList = new ConcurrentQueue<TaskOrder>();
-            ConcurrencyLevel = concurrencyLevel;
-            Semaphore = new SemaphoreSlim(0, concurrencyLevel);
+            Semaphore = new SemaphoreSlim(0);
             CancellationTokenSource = cancellationTokenSource;
             ProbaClient = probaClient;
             Exceptions = new List<Exception>();
             Initialized = true;
             Responses = new List<(int count, bool success, HttpStatusCode statusCode)>();
+            Finalized = false;
         }
 
         public void Schedule(TaskOrder order)
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
+            if (Finalized) throw new InvalidOperationException("This object had been finalized.");
             TaskList.Enqueue(order);
             Semaphore.Release();
         }
@@ -54,6 +56,7 @@ namespace ProbaDotnetSDK.Scheduler
         public async void StartAsync()
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
+            if (Finalized) throw new InvalidOperationException("This object had been finalized.");
 
             while (!CancellationTokenSource.Token.IsCancellationRequested)
             {
@@ -101,6 +104,27 @@ namespace ProbaDotnetSDK.Scheduler
 
             }
         }
+        public (List<TaskOrder> remainingTasks, List<Exception> exceptions, List<(int count, bool success, HttpStatusCode statusCode)> responses) Finalize()
+        {
+            if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
+            if (!CancellationTokenSource.IsCancellationRequested) throw new InvalidOperationException("First you need to cancel all the running tasks");
+            Finalized = true;
+            return (TaskList.ToList(), Exceptions, Responses);
+        }
 
+        public void Dispose()
+        {
+            if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
+            if (!Finalized) throw new InvalidOperationException("You need to finalize the object first.");
+            if (!CancellationTokenSource.IsCancellationRequested) throw new InvalidOperationException("First you need to cancel all the running tasks");
+            Semaphore.Dispose();
+            while (TaskList.TryDequeue(out _))
+            {
+
+            }
+            Exceptions.Clear();
+            Responses.Clear();
+
+        }
     }
 }
