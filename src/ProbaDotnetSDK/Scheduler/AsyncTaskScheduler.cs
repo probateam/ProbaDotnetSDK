@@ -19,17 +19,24 @@ namespace ProbaDotnetSDK.Scheduler
         private CancellationTokenSource CancellationTokenSource { get; }
         private ProbaHttpClient ProbaClient { get; }
         public List<Exception> Exceptions { get; private set; }
-
+        public bool Initialized { get; }
         private List<(int count, bool success, HttpStatusCode statusCode)> Responses { get; }
-        //public AsyncTaskScheduler(int concurrencyLevel)
-        //{
-        //    TaskList = new ConcurrentQueue<TaskOrder>();
-        //    ConcurrencyLevel = concurrencyLevel;
-        //    Semaphore = new SemaphoreSlim(0, ConcurrencyLevel);
-        //}
+
+        public AsyncTaskScheduler(int concurrencyLevel, CancellationTokenSource cancellationTokenSource, ProbaHttpClient probaClient)
+        {
+            TaskList = new ConcurrentQueue<TaskOrder>();
+            ConcurrencyLevel = concurrencyLevel;
+            Semaphore = new SemaphoreSlim(0, concurrencyLevel);
+            CancellationTokenSource = cancellationTokenSource;
+            ProbaClient = probaClient;
+            Exceptions = new List<Exception>();
+            Initialized = true;
+            Responses = new List<(int count, bool success, HttpStatusCode statusCode)>();
+        }
 
         public void Schedule(TaskOrder order)
         {
+            if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
             TaskList.Enqueue(order);
             Semaphore.Release();
         }
@@ -44,8 +51,10 @@ namespace ProbaDotnetSDK.Scheduler
 
         }
 
-        private async void BackgroundProcessing()
+        public async void StartAsync()
         {
+            if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
+
             while (!CancellationTokenSource.Token.IsCancellationRequested)
             {
                 try
