@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using ProbaDotnetSDK.SharedClasses;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace ProbaDotnetSDK.Data
             Logger = logger;
             BasicData = LiteDatabase.GetCollection<BasicData>();
             SessionsData = LiteDatabase.GetCollection<SessionData>();
+            RemoteConfigurations = LiteDatabase.GetCollection<RemoteConfigurationsViewModel>();
         }
 
         public ILiteCollection<BasicData> BasicData { get; }
-        private ILiteCollection<SessionData> SessionsData { get; }
+        public ILiteCollection<SessionData> SessionsData { get; }
+        public ILiteCollection<RemoteConfigurationsViewModel> RemoteConfigurations { get; }
         public void Dispose()
         {
 
