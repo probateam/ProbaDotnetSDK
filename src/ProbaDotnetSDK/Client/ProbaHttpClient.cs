@@ -1,4 +1,5 @@
-﻿using ProbaDotnetSDK.Services;
+﻿using ProbaDotnetSDK.Configuration;
+using ProbaDotnetSDK.Services;
 using ProbaDotnetSDK.SharedClasses;
 using Serilog;
 using System;
@@ -19,8 +20,22 @@ namespace ProbaDotnetSDK.Client
         private string ProjectId { get; }
         private string BaseURL { get; }
         private HmacService HmacService { get; }
-        private int APIVersion { get; }
         private CancellationTokenSource CancellationTokenSource { get; }
+        private ConfigurationModel Configuration { get; }
+
+        public ProbaHttpClient(ILogger logger, HttpClient client, string secretKet, string projectId, string baseURL, HmacService hmacService, CancellationTokenSource cancellationTokenSource, ConfigurationModel configuration)
+        {
+            Logger = logger;
+            Client = client;
+            SecretKet = secretKet;
+            ProjectId = projectId;
+            BaseURL = baseURL;
+            HmacService = hmacService;
+            CancellationTokenSource = cancellationTokenSource;
+            Configuration = configuration;
+        }
+
+        private int APIVersion => Configuration.CurrentAPIVersion;
 
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<RemoteConfigurationsViewModel> remoteConfigurations)> GetRemoteConfigurationsAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
