@@ -19,6 +19,8 @@ namespace ProbaDotnetSDK
 
         public static string EngineName => "None";
 
+        public static string ConnectionType => "WIFI";
+
 
     }
 }

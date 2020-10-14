@@ -9,6 +9,6 @@ namespace ProbaDotnetSDK.Configuration
         public string BaseURL { get; set; }
         public string ServerIPAddress { get; set; }
         public int CurrentAPIVersion { get; set; }
-        public List<int> CompatibleAPIVesions { get; set; }
+        public List<int> CompatibleAPIVersions { get; set; }
     }
 }
