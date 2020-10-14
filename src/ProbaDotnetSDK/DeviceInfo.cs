@@ -14,11 +14,8 @@ namespace ProbaDotnetSDK
         public static string ApplicationBuild { get; set; }
         public static string ApplicationVersion { get; set; }
         public static string Manufacturer => "Microsoft";
-
         public static EPlatforms Platform => EPlatforms.None;
-
         public static string EngineName => "None";
-
         public static string ConnectionType => "WIFI";
 
 
