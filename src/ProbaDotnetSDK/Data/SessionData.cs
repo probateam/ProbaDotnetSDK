@@ -7,6 +7,7 @@ namespace ProbaDotnetSDK.Data
 {
     internal class SessionData
     {
+        public int Id { get; set; }
         public StartSessionViewModel StartSession { get; set; }
         public bool Ended { get; set; }
         public EndSessionViewModel EndSession { get; set; }

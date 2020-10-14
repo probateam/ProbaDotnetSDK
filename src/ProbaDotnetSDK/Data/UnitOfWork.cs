@@ -18,12 +18,12 @@ namespace ProbaDotnetSDK.Data
             Logger = logger;
             BasicData = LiteDatabase.GetCollection<BasicData>();
             SessionsData = LiteDatabase.GetCollection<SessionData>();
-            RemoteConfigurations = LiteDatabase.GetCollection<RemoteConfigurationsViewModel>();
+            RemoteConfigurations = LiteDatabase.GetCollection<RemotoConfigurationModel>();
         }
 
         public ILiteCollection<BasicData> BasicData { get; }
         public ILiteCollection<SessionData> SessionsData { get; }
-        public ILiteCollection<RemoteConfigurationsViewModel> RemoteConfigurations { get; }
+        public ILiteCollection<RemotoConfigurationModel> RemoteConfigurations { get; }
         public void Dispose()
         {
 
