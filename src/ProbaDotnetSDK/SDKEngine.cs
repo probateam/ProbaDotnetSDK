@@ -69,6 +69,7 @@ namespace ProbaDotnetSDK
         public static async Task StartSession()
         {
             var ss = DeviceInfo.GetBaseEventDataViewModel<StartSessionViewModel>(UserId, Guid.Empty, Class);
+            
         }
 
 

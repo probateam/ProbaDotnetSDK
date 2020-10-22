@@ -18,5 +18,6 @@ namespace ProbaDotnetSDK.SharedClasses
         public string LeaderBoardName { get; set; }
         public bool ArenaMode { get; set; }
         public string ArenaName { get; set; }
+       
     }
 }

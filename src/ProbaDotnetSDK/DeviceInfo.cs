@@ -1,4 +1,5 @@
-﻿using ProbaDotnetSDK.SharedClasses;
+﻿using Mapster;
+using ProbaDotnetSDK.SharedClasses;
 using ProbaDotnetSDK.SharedEnums;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace ProbaDotnetSDK
         public static string EngineName => "None";
         public static string ConnectionType => "WIFI";
 
-        public static T GetBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class) where T : BaseEventDataViewModel => (T)new BaseEventDataViewModel
+        public static T GetBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class) where T : BaseEventDataViewModel => new BaseEventDataViewModel
         {
             SDKVersion = SDKVersion,
             OS = OSInfo,
@@ -41,6 +42,6 @@ namespace ProbaDotnetSDK
             UserId = userId,
             SessionHanddle = sessionId,
             Class = Class
-        };
+        }.Adapt<T>();
     }
 }
