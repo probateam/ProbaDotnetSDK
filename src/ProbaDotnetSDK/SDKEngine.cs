@@ -68,10 +68,11 @@ namespace ProbaDotnetSDK
         }
 
 
-        public static async Task<bool> IsConnectedToInternet()
+        public static async Task<bool> IsConnectedToInternet(bool sendPing = true)
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
+                if (!sendPing) return true;
                 using (var ping = new Ping())
                 {
                     try
