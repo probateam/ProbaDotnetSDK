@@ -2,6 +2,6 @@
 {
     public class StartSessionViewModel : BaseEventDataViewModel
     {
-        public int SessionCount { get; set; }
+        public long SessionCount { get; set; }
     }
 }

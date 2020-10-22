@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -48,7 +49,9 @@ namespace ProbaDotnetSDK
         private static Guid UserId { get; set; }
         private static Guid SessionId { get; set; }
         private static string Class { get; set; }
-        public static void EnsureUserCreated()
+        private static string Location { get; set; }
+        private static bool ActiveSession { get; set; } = false;
+        private static BasicData EnsureUserCreated()
         {
             var user = UnitOfWork.BasicData.Query().First();
             if ((user?.UserId ?? Guid.Empty) == default)
@@ -65,11 +68,44 @@ namespace ProbaDotnetSDK
                 UnitOfWork.BasicData.Insert(user);
             }
             UserId = user.UserId;
+            return user;
         }
+
         public static async Task StartSession()
         {
-            var ss = DeviceInfo.GetBaseEventDataViewModel<StartSessionViewModel>(UserId, Guid.Empty, Class);
-            
+            if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");
+            var user = EnsureUserCreated();
+            if (user.HasActiveSession) throw new InvalidOperationException("An open session exist in database, you need to close it first.");
+            user.SessionCount++;
+            var sessionStartInfo = DeviceInfo.GetBaseEventDataViewModel<StartSessionViewModel>(UserId, Guid.Empty, Class);
+            sessionStartInfo.SessionCount = user.SessionCount;
+            try
+            {
+                var (sucess, statusCode, sessionResponse) = await ProbaHttpClient.StartSessionAsync(sessionStartInfo);
+                if (!sucess)
+                {
+                    //TODO save in databse
+                }
+                Location = sessionResponse.Location;
+                SessionId = sessionResponse.SessionId;
+                ActiveSession = true;
+                user.CurrentSessionId = SessionId;
+                if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = DateTime.UtcNow;
+                user.CurrentSessionStartTime = DateTime.UtcNow;
+                user.HasActiveSession = true;
+                UnitOfWork.BasicData.Update(user);
+            }
+            catch (Exception)
+            {
+                //TODO save in databse
+            }
+        }
+
+        public async Task EndSession()
+        {
+            var user = EnsureUserCreated();
+            if (!user.HasActiveSession) throw new InvalidOperationException("There is no active session in db, you need to create one first.");
+
         }
 
 
