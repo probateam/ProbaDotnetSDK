@@ -8,6 +8,8 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +44,46 @@ namespace ProbaDotnetSDK
             ProbaHttpClient = new ProbaHttpClient(LoggerFactory.Logger, mainClient, SecretKet, ProjectId, HmacService, CancellationTokenSource, ConfigurationProvider.Configuration);
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
         }
+
+        public static void EnsureUserCreated()
+        {
+            var user = UnitOfWork.BasicData.Query().First();
+            if ((user?.UserId ?? Guid.Empty) == default)
+            {
+                user = new BasicData
+                {
+                    UserId = Guid.NewGuid(),
+                    SessionCount = 0,
+                    PurchesesCount = 0,
+                    VirtualPurchesesCount = 0,
+                    CreationTime = DateTime.UtcNow,
+                    OverallPlayTime = 0
+                };
+                UnitOfWork.BasicData.Insert(user);
+            }
+        }
+        public static async Task StartSession()
+        {
+
+        }
+
+
+        public static async Task<bool> IsConnectedToInternet()
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                using (var ping = new Ping())
+                {
+                    try
+                    {
+                        return (await ping.SendPingAsync(ConfigurationProvider.Configuration.BaseURL)).Status == IPStatus.Success;
+                    }
+                    catch { }
+                }
+            }
+            return false;
+        }
+
 
     }
 }
