@@ -4,6 +4,7 @@ using ProbaDotnetSDK.Data;
 using ProbaDotnetSDK.Logging;
 using ProbaDotnetSDK.Scheduler;
 using ProbaDotnetSDK.Services;
+using ProbaDotnetSDK.SharedClasses;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,9 @@ namespace ProbaDotnetSDK
             ProbaHttpClient = new ProbaHttpClient(LoggerFactory.Logger, mainClient, SecretKet, ProjectId, HmacService, CancellationTokenSource, ConfigurationProvider.Configuration);
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
         }
-
+        private static Guid UserId { get; set; }
+        private static Guid SessionId { get; set; }
+        private static string Class { get; set; }
         public static void EnsureUserCreated()
         {
             var user = UnitOfWork.BasicData.Query().First();
@@ -61,10 +64,11 @@ namespace ProbaDotnetSDK
                 };
                 UnitOfWork.BasicData.Insert(user);
             }
+            UserId = user.UserId;
         }
         public static async Task StartSession()
         {
-
+            var ss = DeviceInfo.GetBaseEventDataViewModel<StartSessionViewModel>(UserId, Guid.Empty, Class);
         }
 
 

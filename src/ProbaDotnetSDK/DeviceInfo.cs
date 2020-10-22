@@ -1,4 +1,5 @@
-﻿using ProbaDotnetSDK.SharedEnums;
+﻿using ProbaDotnetSDK.SharedClasses;
+using ProbaDotnetSDK.SharedEnums;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -18,6 +19,28 @@ namespace ProbaDotnetSDK
         public static string EngineName => "None";
         public static string ConnectionType => "WIFI";
 
-
+        public static T GetBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class) where T : BaseEventDataViewModel => (T)new BaseEventDataViewModel
+        {
+            SDKVersion = SDKVersion,
+            OS = OSInfo,
+            Battery = 100,
+            Charging = false,
+            ClientTs = DateTime.UtcNow.Ticks,
+            ConnectionType = ConnectionType,
+            Device = DeviceName,
+            Engine = EngineName,
+            Manufacturer = Manufacturer,
+            Nonce = Guid.NewGuid().ToString(),
+            Platform = Platform,
+            Version = ApplicationVersion,
+            Build = ApplicationBuild,
+            Google_AID = string.Empty,
+            IOS_IDFA = string.Empty,
+            LogOnGooglePlay = default,
+            ProbaGameCenter = default,
+            UserId = userId,
+            SessionHanddle = sessionId,
+            Class = Class
+        };
     }
 }
