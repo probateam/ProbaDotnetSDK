@@ -8,6 +8,7 @@ using ProbaDotnetSDK.SharedClasses;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Security;
@@ -31,7 +32,7 @@ namespace ProbaDotnetSDK
         private static UnitOfWork UnitOfWork { get; set; }
         private static AsyncTaskScheduler AsyncTaskScheduler { get; set; }
 
-        public static async Task Initialize(string projectId, string secretKey)
+        public static async Task InitializeAsync(string projectId, string secretKey)
         {
             LoggerFactory = new LoggerFactory();
             ConfigurationProvider = new ConfigurationProvider();
@@ -49,8 +50,7 @@ namespace ProbaDotnetSDK
         private static Guid UserId { get; set; }
         private static Guid SessionId { get; set; }
         private static string Class { get; set; }
-        private static string Location { get; set; }
-        private static bool ActiveSession { get; set; } = false;
+        private static bool ActiveSession { get; set; }
         private static BasicData EnsureUserCreated()
         {
             var user = UnitOfWork.BasicData.Query().First();
@@ -86,13 +86,13 @@ namespace ProbaDotnetSDK
                 {
                     //TODO save in databse
                 }
-                Location = sessionResponse.Location;
                 SessionId = sessionResponse.SessionId;
                 ActiveSession = true;
                 user.CurrentSessionId = SessionId;
                 if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = DateTime.UtcNow;
                 user.CurrentSessionStartTime = DateTime.UtcNow;
                 user.HasActiveSession = true;
+                user.CurrentSessionLocation = sessionResponse.Location;
                 UnitOfWork.BasicData.Update(user);
             }
             catch (Exception)
@@ -101,11 +101,46 @@ namespace ProbaDotnetSDK
             }
         }
 
-        public async Task EndSession()
+        public static async Task EndSession(bool error = false, string errorData = "")
         {
             var user = EnsureUserCreated();
             if (!user.HasActiveSession) throw new InvalidOperationException("There is no active session in db, you need to create one first.");
-
+            var (remainingTasks, exceptions, responses) = AsyncTaskScheduler.Finalize();
+            //TODO send remaining tasks
+            var time = DateTime.UtcNow.Ticks;
+            var endSessionInfo = new EndSessionViewModel
+            {
+                Battery = 100,
+                ClientTs = time,
+                Error = error,
+                ErrorData = errorData,
+                Location = user.CurrentSessionLocation,
+                OS = DeviceInfo.OSInfo,
+                SessionId = user.CurrentSessionId,
+                UserId = user.UserId,
+                SessionLength = time - user.CurrentSessionStartTime.Ticks,
+                Exceptions = exceptions.Select(x => x.ToString()).ToList()
+            };
+            try
+            {
+                var (sucess, statusCode) = await ProbaHttpClient.EndSessionAsync(endSessionInfo);
+                if (!sucess)
+                {
+                    //TODO save in databse
+                }
+                SessionId = Guid.Empty;
+                ActiveSession = false;
+                user.CurrentSessionId = Guid.Empty;
+                user.CurrentSessionStartTime = DateTime.MinValue;
+                user.HasActiveSession = false;
+                user.CurrentSessionLocation = string.Empty;
+                user.OverallPlayTime += time;
+                UnitOfWork.BasicData.Update(user);
+            }
+            catch (Exception)
+            {
+                //TODO save in databse
+            }
         }
 
 

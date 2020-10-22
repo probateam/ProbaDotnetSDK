@@ -17,6 +17,6 @@ namespace ProbaDotnetSDK.Data
         public DateTime CurrentSessionStartTime { get; set; }
         public long OverallPlayTime { get; set; }
         public bool HasActiveSession { get; set; }
-
+        public string CurrentSessionLocation { get; set; }
     }
 }
