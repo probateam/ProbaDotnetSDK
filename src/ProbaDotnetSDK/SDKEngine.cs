@@ -1,10 +1,12 @@
-﻿using ProbaDotnetSDK.Client;
+﻿using Mapster;
+using ProbaDotnetSDK.Client;
 using ProbaDotnetSDK.Configuration;
 using ProbaDotnetSDK.Data;
 using ProbaDotnetSDK.Logging;
 using ProbaDotnetSDK.Scheduler;
 using ProbaDotnetSDK.Services;
 using ProbaDotnetSDK.SharedClasses;
+using ProbaDotnetSDK.SharedEnums;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -72,17 +74,33 @@ namespace ProbaDotnetSDK
             return user;
         }
 
-        public static async Task StartSession()
+        private static async Task EnsureSessionAsync()
+        {
+            if (ActiveSession) return;
+            var user = EnsureUserCreated();
+            if (user.HasActiveSession)
+            {
+                ActiveSession = true;
+                UserId = user.UserId;
+                SessionId = user.CurrentSessionId;
+                return;
+            }
+            await StartSessionAsync();
+        }
+        public static async Task StartSessionAsync()
         {
             if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");
             var user = EnsureUserCreated();
             if (user.HasActiveSession) throw new InvalidOperationException("An open session exist in database, you need to close it first.");
             user.SessionCount++;
-            var sessionStartInfo = DeviceInfo.GetBaseEventDataViewModel<StartSessionViewModel>(UserId, Guid.Empty, Class);
-            sessionStartInfo.SessionCount = user.SessionCount;
+            var evenData = new StartSessionViewModel
+            {
+                SessionCount = user.SessionCount
+            };
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
             try
             {
-                var (sucess, statusCode, sessionResponse) = await ProbaHttpClient.StartSessionAsync(sessionStartInfo);
+                var (sucess, statusCode, sessionResponse) = await ProbaHttpClient.StartSessionAsync(evenData);
                 if (!sucess)
                 {
                     //TODO save in databse
@@ -101,7 +119,7 @@ namespace ProbaDotnetSDK
                 //TODO save in databse
             }
         }
-        public static async Task EndSession(bool error = false, string errorData = "")
+        public static async Task EndSessionAsync(bool error = false, string errorData = "")
         {
             var user = EnsureUserCreated();
             if (!user.HasActiveSession) throw new InvalidOperationException("There is no active session in db, you need to create one first.");
@@ -142,12 +160,13 @@ namespace ProbaDotnetSDK
                 //TODO save in databse
             }
         }
-        public static async Task<IList<RemoteConfigurationsViewModel>> GetRemoteConfig()
+        public static async Task<IList<RemoteConfigurationsViewModel>> GetRemoteConfigAsync()
         {
-            var getRemoteCOnfigInfo = DeviceInfo.GetBaseEventDataViewModel<BaseEventDataViewModel>(UserId, Guid.Empty, Class);
+            var eventData = new BaseEventDataViewModel();
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
             try
             {
-                var (sucess, statusCode, remoteConfigurations) = await ProbaHttpClient.GetRemoteConfigurationsAsync(getRemoteCOnfigInfo);
+                var (sucess, statusCode, remoteConfigurations) = await ProbaHttpClient.GetRemoteConfigurationsAsync(eventData);
                 if (!sucess)
                 {
                 }
@@ -162,7 +181,19 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
+        public static async Task SendAchievementEventAsync(AchievementEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
 
+            var job = new TaskOrder
+            {
+                Achievement = eventData,
+                Type = TaskType.SendAchievementEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
         public static async Task<bool> IsConnectedToInternet(bool sendPing = true)
         {
             if (NetworkInterface.GetIsNetworkAvailable())

@@ -20,28 +20,28 @@ namespace ProbaDotnetSDK
         public static string EngineName => "None";
         public static string ConnectionType => "WIFI";
 
-        internal static T GetBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class) where T : BaseEventDataViewModel => new BaseEventDataViewModel
+        public static void WriteBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class, T eventData) where T : BaseEventDataViewModel
         {
-            SDKVersion = SDKVersion,
-            OS = OSInfo,
-            Battery = 100,
-            Charging = false,
-            ClientTs = DateTime.UtcNow.Ticks,
-            ConnectionType = ConnectionType,
-            Device = DeviceName,
-            Engine = EngineName,
-            Manufacturer = Manufacturer,
-            Nonce = Guid.NewGuid().ToString(),
-            Platform = Platform,
-            Version = ApplicationVersion,
-            Build = ApplicationBuild,
-            Google_AID = string.Empty,
-            IOS_IDFA = string.Empty,
-            LogOnGooglePlay = default,
-            ProbaGameCenter = default,
-            UserId = userId,
-            SessionHanddle = sessionId,
-            Class = Class
-        }.Adapt<T>();
+            eventData.SDKVersion = SDKVersion;
+            eventData.OS = OSInfo;
+            eventData.Battery = 100;
+            eventData.Charging = false;
+            eventData.ClientTs = DateTime.UtcNow.Ticks;
+            eventData.ConnectionType = ConnectionType;
+            eventData.Device = DeviceName;
+            eventData.Engine = EngineName;
+            eventData.Manufacturer = Manufacturer;
+            eventData.Nonce = Guid.NewGuid().ToString();
+            eventData.Platform = Platform;
+            eventData.Version = ApplicationVersion;
+            eventData.Build = ApplicationBuild;
+            eventData.Google_AID = string.Empty;
+            eventData.IOS_IDFA = string.Empty;
+            eventData.LogOnGooglePlay = default;
+            eventData.ProbaGameCenter = default;
+            eventData.UserId = userId;
+            eventData.SessionHanddle = sessionId;
+            eventData.Class = Class;
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace ProbaDotnetSDK.Data
     {
         public int Id { get; set; }
         public IList<RemoteConfigurationsViewModel> RemotoConfigurations { get; set; }
+        public string Hash { get; set; }
     }
 }
