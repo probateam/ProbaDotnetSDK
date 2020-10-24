@@ -194,6 +194,97 @@ namespace ProbaDotnetSDK
             };
             AsyncTaskScheduler.Schedule(job);
         }
+        public static async Task SendAdvertisementEventAsync(AdvertisementEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                Advertisement = eventData,
+                Type = TaskType.SendAdvertisementEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendBusinessEventAsync(BusinessEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                Businesse = eventData,
+                Type = TaskType.SendBusinessEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendContentViewEventAsync(ContentViewEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                ContentView = eventData,
+                Type = TaskType.SendContentViewEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendDesignEventAsync(DesignEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                DesignEvent = eventData,
+                Type = TaskType.SendDesignEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendProgressionEventAsync(ProgressionEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                Progression = eventData,
+                Type = TaskType.SendProgressionEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendSocialEventAsync(SocialEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                Social = eventData,
+                Type = TaskType.SendSocialEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task SendTapEventAsync(TapEventViewModel eventData)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+
+            var job = new TaskOrder
+            {
+                Tap = eventData,
+                Type = TaskType.SendTapEvent
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
         public static async Task<bool> IsConnectedToInternet(bool sendPing = true)
         {
             if (NetworkInterface.GetIsNetworkAvailable())

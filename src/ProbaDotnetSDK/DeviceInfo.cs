@@ -20,7 +20,7 @@ namespace ProbaDotnetSDK
         public static string EngineName => "None";
         public static string ConnectionType => "WIFI";
 
-        public static void WriteBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class, T eventData) where T : BaseEventDataViewModel
+        internal static void WriteBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class, T eventData) where T : BaseEventDataViewModel
         {
             eventData.SDKVersion = SDKVersion;
             eventData.OS = OSInfo;
