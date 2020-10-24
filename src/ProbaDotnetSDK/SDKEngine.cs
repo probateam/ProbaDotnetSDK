@@ -46,6 +46,7 @@ namespace ProbaDotnetSDK
             if (!c) throw new Exception("Configuration not found!!!");
             ProbaHttpClient = new ProbaHttpClient(LoggerFactory.Logger, mainClient, SecretKet, ProjectId, HmacService, CancellationTokenSource, ConfigurationProvider.Configuration);
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
+            AsyncTaskScheduler.StartAsync();
         }
         private static Guid UserId { get; set; }
         private static Guid SessionId { get; set; }
@@ -100,7 +101,6 @@ namespace ProbaDotnetSDK
                 //TODO save in databse
             }
         }
-
         public static async Task EndSession(bool error = false, string errorData = "")
         {
             var user = EnsureUserCreated();
@@ -142,7 +142,26 @@ namespace ProbaDotnetSDK
                 //TODO save in databse
             }
         }
+        public static async Task<IList<RemoteConfigurationsViewModel>> GetRemoteConfig()
+        {
+            var getRemoteCOnfigInfo = DeviceInfo.GetBaseEventDataViewModel<BaseEventDataViewModel>(UserId, Guid.Empty, Class);
+            try
+            {
+                var (sucess, statusCode, remoteConfigurations) = await ProbaHttpClient.GetRemoteConfigurationsAsync(getRemoteCOnfigInfo);
+                if (!sucess)
+                {
+                }
+                var rm = new RemotoConfigurationModel
+                {
+                    RemotoConfigurations = remoteConfigurations
+                };
+                UnitOfWork.RemoteConfigurations.Insert(rm);
+                return (remoteConfigurations);
+            }
 
+            catch { }
+            return default;
+        }
 
         public static async Task<bool> IsConnectedToInternet(bool sendPing = true)
         {
