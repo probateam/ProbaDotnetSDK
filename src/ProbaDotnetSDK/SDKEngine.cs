@@ -302,6 +302,14 @@ namespace ProbaDotnetSDK
             return false;
         }
 
-
+        public static void Dispose()
+        {
+            CancellationTokenSource?.Cancel();
+            AsyncTaskScheduler?.Dispose();
+            UnitOfWork?.Dispose();
+            mainClient?.Dispose();
+            CancellationTokenSource?.Dispose();
+            LoggerFactory?.Dispose();
+        }
     }
 }
