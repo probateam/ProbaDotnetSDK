@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ProbaDotnetSDK
 {
-    internal static class SDKEngine
+    public static class SDKEngine
     {
         private static ConfigurationProvider ConfigurationProvider { get; set; }
         private static LoggerFactory LoggerFactory { get; set; }
@@ -42,7 +42,9 @@ namespace ProbaDotnetSDK
             CancellationTokenSource = new CancellationTokenSource();
             ProjectId = projectId;
             SecretKet = secretKey;
-            mainClient = new HttpClient();
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+            mainClient = new HttpClient(handler);
             UnitOfWork = new UnitOfWork(LoggerFactory.Logger);
             var c = await ConfigurationProvider.LoadConfigurationAsync();
             if (!c) throw new Exception("Configuration not found!!!");
@@ -56,7 +58,7 @@ namespace ProbaDotnetSDK
         private static bool ActiveSession { get; set; }
         private static BasicData EnsureUserCreated()
         {
-            var user = UnitOfWork.BasicData.Query().First();
+            var user = UnitOfWork.BasicData.FindOne(x => true);
             if ((user?.UserId ?? Guid.Empty) == default)
             {
                 user = new BasicData
@@ -119,10 +121,18 @@ namespace ProbaDotnetSDK
                 //TODO save in databse
             }
         }
-        public static async Task EndSessionAsync(bool error = false, string errorData = "")
+        public static async Task EndSessionAsync(bool soft = true, bool error = false, string errorData = "")
         {
             var user = EnsureUserCreated();
             if (!user.HasActiveSession) throw new InvalidOperationException("There is no active session in db, you need to create one first.");
+            if (!soft)
+            {
+                while (!AsyncTaskScheduler.IsQueueEmpty)
+                {
+                    await Task.Delay(10);
+                }
+            }
+            CancellationTokenSource?.Cancel();
             var (remainingTasks, exceptions, responses) = AsyncTaskScheduler.Finalize();
             //TODO send remaining tasks
             var time = DateTime.UtcNow.Ticks;
@@ -304,7 +314,6 @@ namespace ProbaDotnetSDK
 
         public static void Dispose()
         {
-            CancellationTokenSource?.Cancel();
             AsyncTaskScheduler?.Dispose();
             UnitOfWork?.Dispose();
             mainClient?.Dispose();

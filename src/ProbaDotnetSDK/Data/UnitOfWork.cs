@@ -14,7 +14,7 @@ namespace ProbaDotnetSDK.Data
 
         public UnitOfWork(ILogger logger)
         {
-            LiteDatabase = new LiteDatabase("./db/sdkdb.db");
+            LiteDatabase = new LiteDatabase("./sdkdb.db");
             Logger = logger;
             BasicData = LiteDatabase.GetCollection<BasicData>();
             SessionsData = LiteDatabase.GetCollection<SessionData>();

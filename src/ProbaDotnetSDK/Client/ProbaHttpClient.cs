@@ -73,9 +73,10 @@ namespace ProbaDotnetSDK.Client
 
         public async Task<(bool sucess, HttpStatusCode statusCode)> EndSessionAsync(EndSessionViewModel endSessionViewModel)
         {
+            var endSessionToken = new CancellationTokenSource();
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/EndSession/{ProjectId}", endSessionViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/SessionEnd/{ProjectId}", endSessionViewModel.ToJson(), endSessionToken);
                 if (sucess) return (sucess, statusCode);
                 //TODO: handdle errors
                 return (default, statusCode);
@@ -83,6 +84,10 @@ namespace ProbaDotnetSDK.Client
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                endSessionToken.Dispose();
             }
         }
 

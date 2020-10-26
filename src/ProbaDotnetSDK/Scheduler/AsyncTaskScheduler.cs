@@ -54,7 +54,7 @@ namespace ProbaDotnetSDK.Scheduler
             return job;
 
         }
-
+        public bool IsQueueEmpty => TaskList.IsEmpty;
         public async void StartAsync()
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
