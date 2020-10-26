@@ -33,7 +33,7 @@ namespace ProbaDotnetSDK.Client
             Configuration = configuration;
         }
 
-        private int APIVersion => Configuration.CurrentAPIVersion;
+        private string APIVersion => Configuration.CurrentAPIVersion;
         private string BaseURL => Configuration.BaseURL;
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<RemoteConfigurationsViewModel> remoteConfigurations)> GetRemoteConfigurationsAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
