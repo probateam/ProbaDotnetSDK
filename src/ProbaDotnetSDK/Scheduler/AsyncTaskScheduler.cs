@@ -54,6 +54,7 @@ namespace ProbaDotnetSDK.Scheduler
             return job;
 
         }
+        public int QueueCount => TaskList?.Count ?? 0;
         public bool IsQueueEmpty => TaskList.IsEmpty;
         public async void StartAsync()
         {

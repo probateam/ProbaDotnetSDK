@@ -52,6 +52,7 @@ namespace ProbaDotnetSDK
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
             AsyncTaskScheduler.StartAsync();
         }
+        public static int QueueCount => AsyncTaskScheduler?.QueueCount ?? 0;
         private static Guid UserId { get; set; }
         private static Guid SessionId { get; set; }
         private static string Class { get; set; }
@@ -125,7 +126,7 @@ namespace ProbaDotnetSDK
         {
             var user = EnsureUserCreated();
             if (!user.HasActiveSession) throw new InvalidOperationException("There is no active session in db, you need to create one first.");
-            if (!soft)
+            if (soft)
             {
                 while (!AsyncTaskScheduler.IsQueueEmpty)
                 {
