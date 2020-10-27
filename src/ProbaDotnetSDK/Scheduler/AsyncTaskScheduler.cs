@@ -66,6 +66,7 @@ namespace ProbaDotnetSDK.Scheduler
                 try
                 {
                     var job = await DequeueAsync();
+                    if (QueueCount % 100 == 0) Console.WriteLine(QueueCount);
                     bool sucess;
                     HttpStatusCode statusCode;
                     switch (job.Type)
