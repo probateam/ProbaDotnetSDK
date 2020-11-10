@@ -98,7 +98,8 @@ namespace ProbaDotnetSDK
             user.SessionCount++;
             var evenData = new StartSessionViewModel
             {
-                SessionCount = user.SessionCount
+                SessionCount = user.SessionCount,
+                FirstSessionTime = user.FirstSessionStartTime.Ticks
             };
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
             try
