@@ -69,7 +69,7 @@ namespace ProbaDotnetSDK
                     PurchesesCount = 0,
                     VirtualPurchesesCount = 0,
                     CreationTime = DateTime.UtcNow,
-                    OverallPlayTime = 0
+                    OverallPlayTime = 0,
                 };
                 UnitOfWork.BasicData.Insert(user);
             }
@@ -96,10 +96,12 @@ namespace ProbaDotnetSDK
             var user = EnsureUserCreated();
             if (user.HasActiveSession) throw new InvalidOperationException("An open session exist in database, you need to close it first.");
             user.SessionCount++;
+            var fst = user.FirstSessionStartTime.Ticks;
+            if (fst == 0) fst = DateTime.UtcNow.Ticks;
             var evenData = new StartSessionViewModel
             {
                 SessionCount = user.SessionCount,
-                FirstSessionTime = user.FirstSessionStartTime.Ticks
+                FirstSessionTime = fst
             };
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
             try
@@ -112,7 +114,7 @@ namespace ProbaDotnetSDK
                 SessionId = sessionResponse.SessionId;
                 ActiveSession = true;
                 user.CurrentSessionId = SessionId;
-                if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = DateTime.UtcNow;
+                if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = new DateTime(fst);
                 user.CurrentSessionStartTime = DateTime.UtcNow;
                 user.HasActiveSession = true;
                 user.CurrentSessionLocation = sessionResponse.Location;
@@ -148,7 +150,7 @@ namespace ProbaDotnetSDK
                 OS = DeviceInfo.OSInfo,
                 SessionId = user.CurrentSessionId,
                 UserId = user.UserId,
-                SessionLength = time - user.CurrentSessionStartTime.Ticks,
+                SessionLength = user.CurrentSessionStartTime.Ticks - time,
                 Exceptions = exceptions.Select(x => x.ToString()).ToList()
             };
             try
