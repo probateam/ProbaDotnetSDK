@@ -7,8 +7,8 @@ namespace ProbaDotnetSDK
 {
     public static class StringUtils
     {
-        public static string ToJson(this object obj)
-            => Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+        public static string ToJson(this object obj, bool humanReadable = false)
+            => Newtonsoft.Json.JsonConvert.SerializeObject(obj, humanReadable ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None);
 
         public static T FromJson<T>(this string json)
             => Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
