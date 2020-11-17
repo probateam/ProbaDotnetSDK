@@ -22,7 +22,7 @@ namespace ProbaDotnetSDK.SharedClasses
         public string ConnectionType { get; set; }
         public string IOS_IDFA { get; set; }
         public string Google_AID { get; set; }
-
+        public string Proba_GCID { get; set; }
         public string Custom1 { get; set; }
         public string Custom2 { get; set; }
         public string Custom3 { get; set; }
