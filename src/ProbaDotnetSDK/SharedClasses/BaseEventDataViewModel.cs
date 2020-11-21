@@ -33,5 +33,6 @@ namespace ProbaDotnetSDK.SharedClasses
         public double Battery { get; set; }
 
         public bool Charging { get; set; }
+        public string UserName { get; set; }
     }
 }

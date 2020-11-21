@@ -90,6 +90,43 @@ namespace ProbaDotnetSDK
             }
             await StartSessionAsync();
         }
+
+        public static async Task RegisterAsync()
+        {
+            if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");
+            var user = EnsureUserCreated();
+            if (user.HasActiveSession) throw new InvalidOperationException("An open session exist in database, you need to close it first.");
+            user.SessionCount++;
+            var fst = user.FirstSessionStartTime.Ticks;
+            if (fst == 0) fst = DateTime.UtcNow.Ticks;
+            var evenData = new StartSessionViewModel
+            {
+                SessionCount = user.SessionCount,
+                FirstSessionTime = fst
+            };
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
+            try
+            {
+                var (sucess, statusCode, sessionResponse) = await ProbaHttpClient.StartSessionAsync(evenData);
+                if (!sucess)
+                {
+                    //TODO save in databse
+                }
+                SessionId = sessionResponse.SessionId;
+                ActiveSession = true;
+                user.CurrentSessionId = SessionId;
+                if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = new DateTime(fst);
+                user.CurrentSessionStartTime = DateTime.UtcNow;
+                user.HasActiveSession = true;
+                user.CurrentSessionLocation = sessionResponse.Location;
+                UnitOfWork.BasicData.Update(user);
+            }
+            catch (Exception)
+            {
+                //TODO save in databse
+            }
+        }
+
         public static async Task StartSessionAsync()
         {
             if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");

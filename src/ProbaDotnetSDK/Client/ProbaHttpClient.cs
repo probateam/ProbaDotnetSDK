@@ -35,6 +35,21 @@ namespace ProbaDotnetSDK.Client
 
         private string APIVersion => Configuration.CurrentAPIVersion;
         private string BaseURL => Configuration.BaseURL;
+
+        public async Task<(bool sucess, HttpStatusCode statusCode, RegisterResponseViewModel sessionResponse)> RegisterAsync(BaseEventDataViewModel baseEventDataViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Register/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode, content.FromJson<RegisterResponseViewModel>());
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<RemoteConfigurationsViewModel> remoteConfigurations)> GetRemoteConfigurationsAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
             try
