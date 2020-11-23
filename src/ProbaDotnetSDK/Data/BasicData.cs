@@ -18,5 +18,8 @@ namespace ProbaDotnetSDK.Data
         public long OverallPlayTime { get; set; }
         public bool HasActiveSession { get; set; }
         public string CurrentSessionLocation { get; set; }
+
+        public string GameCenterUserName { get; set; }
+        public string CurrentUserName { get; set; }
     }
 }

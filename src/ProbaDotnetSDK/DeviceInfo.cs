@@ -39,6 +39,7 @@ namespace ProbaDotnetSDK
             eventData.IOS_IDFA = string.Empty;
             eventData.LogOnGooglePlay = default;
             eventData.ProbaGameCenter = default;
+            eventData.Proba_GCID = string.Empty;
             eventData.UserId = userId;
             eventData.SessionHanddle = sessionId;
             eventData.Class = Class;

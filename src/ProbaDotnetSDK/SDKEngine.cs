@@ -10,6 +10,7 @@ using ProbaDotnetSDK.SharedEnums;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
@@ -33,8 +34,9 @@ namespace ProbaDotnetSDK
         private static ProbaHttpClient ProbaHttpClient { get; set; }
         private static UnitOfWork UnitOfWork { get; set; }
         private static AsyncTaskScheduler AsyncTaskScheduler { get; set; }
+        private static string UserName { get; set; }
 
-        public static async Task InitializeAsync(string projectId, string secretKey)
+        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "gameUser")
         {
             LoggerFactory = new LoggerFactory();
             ConfigurationProvider = new ConfigurationProvider();
@@ -51,29 +53,24 @@ namespace ProbaDotnetSDK
             ProbaHttpClient = new ProbaHttpClient(LoggerFactory.Logger, mainClient, SecretKet, ProjectId, HmacService, CancellationTokenSource, ConfigurationProvider.Configuration);
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
             AsyncTaskScheduler.StartAsync();
+            UserName = userName;
+            await RegisterAsync();
         }
         public static int QueueCount => AsyncTaskScheduler?.QueueCount ?? 0;
         private static Guid UserId { get; set; }
         private static Guid SessionId { get; set; }
         private static string Class { get; set; }
         private static bool ActiveSession { get; set; }
+
         private static BasicData EnsureUserCreated()
         {
             var user = UnitOfWork.BasicData.FindOne(x => true);
             if ((user?.UserId ?? Guid.Empty) == default)
             {
-                user = new BasicData
-                {
-                    UserId = Guid.NewGuid(),
-                    SessionCount = 0,
-                    PurchesesCount = 0,
-                    VirtualPurchesesCount = 0,
-                    CreationTime = DateTime.UtcNow,
-                    OverallPlayTime = 0,
-                };
-                UnitOfWork.BasicData.Insert(user);
+                return default;
             }
             UserId = user.UserId;
+            UserName = user.CurrentUserName;
             return user;
         }
 
@@ -91,35 +88,35 @@ namespace ProbaDotnetSDK
             await StartSessionAsync();
         }
 
-        public static async Task RegisterAsync()
+        private static async Task RegisterAsync()
         {
-            if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");
             var user = EnsureUserCreated();
-            if (user.HasActiveSession) throw new InvalidOperationException("An open session exist in database, you need to close it first.");
-            user.SessionCount++;
-            var fst = user.FirstSessionStartTime.Ticks;
-            if (fst == 0) fst = DateTime.UtcNow.Ticks;
-            var evenData = new StartSessionViewModel
+            if (!(user is null)) return;
+            var evenData = new BaseEventDataViewModel
             {
-                SessionCount = user.SessionCount,
-                FirstSessionTime = fst
+
             };
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
+            evenData.UserName = UserName;
             try
             {
-                var (sucess, statusCode, sessionResponse) = await ProbaHttpClient.StartSessionAsync(evenData);
+                var (sucess, statusCode, registerResponse) = await ProbaHttpClient.RegisterAsync(evenData);
                 if (!sucess)
                 {
                     //TODO save in databse
                 }
-                SessionId = sessionResponse.SessionId;
-                ActiveSession = true;
-                user.CurrentSessionId = SessionId;
-                if (user.FirstSessionStartTime == default) user.FirstSessionStartTime = new DateTime(fst);
-                user.CurrentSessionStartTime = DateTime.UtcNow;
-                user.HasActiveSession = true;
-                user.CurrentSessionLocation = sessionResponse.Location;
-                UnitOfWork.BasicData.Update(user);
+                user = new BasicData
+                {
+                    UserId = registerResponse.UserId,
+                    SessionCount = 0,
+                    PurchesesCount = 0,
+                    VirtualPurchesesCount = 0,
+                    CreationTime = DateTime.UtcNow,
+                    OverallPlayTime = 0,
+                    CurrentUserName = UserName,
+                };
+                UnitOfWork.BasicData.Insert(user);
+                UserId = user.UserId;
             }
             catch (Exception)
             {
