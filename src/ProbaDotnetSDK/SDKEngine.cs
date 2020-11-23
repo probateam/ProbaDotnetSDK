@@ -36,7 +36,7 @@ namespace ProbaDotnetSDK
         private static AsyncTaskScheduler AsyncTaskScheduler { get; set; }
         private static string UserName { get; set; }
 
-        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "gameUser")
+        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "")
         {
             LoggerFactory = new LoggerFactory();
             ConfigurationProvider = new ConfigurationProvider();
@@ -53,7 +53,7 @@ namespace ProbaDotnetSDK
             ProbaHttpClient = new ProbaHttpClient(LoggerFactory.Logger, mainClient, SecretKet, ProjectId, HmacService, CancellationTokenSource, ConfigurationProvider.Configuration);
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
             AsyncTaskScheduler.StartAsync();
-            UserName = userName;
+            UserName = userName != "" ? userName : Guid.NewGuid().ToString();
             await RegisterAsync();
         }
         public static int QueueCount => AsyncTaskScheduler?.QueueCount ?? 0;
