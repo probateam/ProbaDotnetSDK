@@ -19,6 +19,7 @@ namespace ProbaDotnetSDK
         public static EPlatforms Platform => EPlatforms.None;
         public static string EngineName => "None";
         public static string ConnectionType => "WIFI";
+        public static string DeviceUniqueId => "DeviceUniqueId";
 
         internal static void WriteBaseEventDataViewModel<T>(Guid userId, Guid sessionId, string Class, T eventData) where T : BaseEventDataViewModel
         {
@@ -43,6 +44,7 @@ namespace ProbaDotnetSDK
             eventData.UserId = userId;
             eventData.SessionHanddle = sessionId;
             eventData.Class = Class;
+            eventData.UniqueId = DeviceUniqueId;
         }
     }
 }

@@ -35,8 +35,8 @@ namespace ProbaDotnetSDK
         private static UnitOfWork UnitOfWork { get; set; }
         private static AsyncTaskScheduler AsyncTaskScheduler { get; set; }
         private static string UserName { get; set; }
-
-        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "")
+        private static bool NewUser { get; set; }
+        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "", bool newUser = false)
         {
             LoggerFactory = new LoggerFactory();
             ConfigurationProvider = new ConfigurationProvider();
@@ -54,6 +54,7 @@ namespace ProbaDotnetSDK
             AsyncTaskScheduler = new AsyncTaskScheduler(CancellationTokenSource, ProbaHttpClient);
             AsyncTaskScheduler.StartAsync();
             UserName = userName != "" ? userName : Guid.NewGuid().ToString();
+            NewUser = newUser;
             await RegisterAsync();
         }
         public static int QueueCount => AsyncTaskScheduler?.QueueCount ?? 0;
@@ -98,6 +99,7 @@ namespace ProbaDotnetSDK
             };
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
             evenData.UserName = UserName;
+            evenData.NewUser = NewUser;
             try
             {
                 var (sucess, statusCode, registerResponse) = await ProbaHttpClient.RegisterAsync(evenData);
