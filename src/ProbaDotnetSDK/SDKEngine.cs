@@ -167,8 +167,9 @@ namespace ProbaDotnetSDK
             {
                 while (!AsyncTaskScheduler.IsQueueEmpty)
                 {
-                    await Task.Delay(10);
+                    await Task.Delay(5000);
                 }
+                await Task.Delay(10000);
             }
             CancellationTokenSource?.Cancel();
             var (remainingTasks, exceptions, responses) = AsyncTaskScheduler.Finalize();
