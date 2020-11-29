@@ -73,6 +73,27 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode, RegisterResponseViewModel sessionResponse)> GetUserDataAsync(BaseEventDataViewModel baseEventDataViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/GetUserData/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    var res = content.FromJson<RegisterResponseViewModel>();
+                    if (string.IsNullOrWhiteSpace(res.Progress)) res.Progress = res.Progress.FromBase64String().ToUTF8();
+                    if (string.IsNullOrWhiteSpace(res.Configurations)) res.Configurations = res.Configurations.FromBase64String().ToUTF8();
+                    return (sucess, statusCode, res);
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<RemoteConfigurationsViewModel> remoteConfigurations)> GetRemoteConfigurationsAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
             try

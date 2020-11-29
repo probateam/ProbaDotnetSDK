@@ -89,10 +89,10 @@ namespace ProbaDotnetSDK
             await StartSessionAsync();
         }
 
-        private static async Task RegisterAsync()
+        private static async Task<(string progress, string configurations)> RegisterAsync()
         {
             var user = EnsureUserCreated();
-            if (!(user is null)) return;
+            if (!(user is null)) return default;
             var evenData = new BaseEventDataViewModel
             {
 
@@ -115,15 +115,51 @@ namespace ProbaDotnetSDK
                     VirtualPurchesesCount = 0,
                     CreationTime = DateTime.UtcNow,
                     OverallPlayTime = 0,
-                    CurrentUserName = UserName,
+                    CurrentUserName = registerResponse.UserName,
                 };
                 UnitOfWork.BasicData.Insert(user);
                 UserId = user.UserId;
+                return (registerResponse.Progress, registerResponse.Configurations);
             }
             catch (Exception)
             {
                 //TODO save in databse
             }
+            return default;
+        }
+
+        public static async Task SaveUserProgress(string progress, string configurations)
+        {
+            var eventData = new ProgressViewModel();
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            eventData.Configurations = configurations;
+            eventData.Progress = progress;
+            try
+            {
+                var (sucess, statusCode) = await ProbaHttpClient.SaveUserProgressAsync(eventData);
+                if (!sucess)
+                {
+                }
+            }
+
+            catch { }
+        }
+
+        public static async Task<(string progress, string configurations)> GetUserData()
+        {
+            var eventData = new ProgressViewModel();
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            try
+            {
+                var (sucess, statusCode, registerResponse) = await ProbaHttpClient.GetUserDataAsync(eventData);
+                if (!sucess)
+                {
+                }
+                return (registerResponse.Progress, registerResponse.Configurations);
+            }
+
+            catch { }
+            return default;
         }
 
         public static async Task StartSessionAsync()

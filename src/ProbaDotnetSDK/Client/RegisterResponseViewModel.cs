@@ -9,5 +9,6 @@ namespace ProbaDotnetSDK.Client
         public Guid UserId { get; set; }
         public string Progress { get; set; }
         public string Configurations { get; set; }
+        public string UserName { get; set; }
     }
 }
