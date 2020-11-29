@@ -41,9 +41,32 @@ namespace ProbaDotnetSDK.Client
             try
             {
                 var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Register/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
-                if (sucess) return (sucess, statusCode, content.FromJson<RegisterResponseViewModel>());
+                if (sucess)
+                {
+                    var res = content.FromJson<RegisterResponseViewModel>();
+                    if (string.IsNullOrWhiteSpace(res.Progress)) res.Progress = res.Progress.FromBase64String().ToUTF8();
+                    if (string.IsNullOrWhiteSpace(res.Configurations)) res.Configurations = res.Configurations.FromBase64String().ToUTF8();
+                    return (sucess, statusCode, res);
+                }
                 //TODO: handdle errors
                 return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> SaveUserProgressAsync(ProgressViewModel progress)
+        {
+            try
+            {
+                progress.Progress = progress.Progress.FromUTF8().ToBase64String();
+                progress.Configurations = progress.Configurations.FromUTF8().ToBase64String();
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/UpdateUserProgress/{ProjectId}", progress.ToJson(), CancellationTokenSource);
+                if (sucess) return (sucess, statusCode);
+                //TODO: handdle errors
+                return (default, statusCode);
             }
             catch (Exception)
             {
