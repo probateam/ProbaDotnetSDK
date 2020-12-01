@@ -9,7 +9,7 @@ namespace ProbaDotnetSDK.SharedClasses
         numerical,
         Time
     }
-    public class LeaderBoard
+    public class LeaderBoardViewModel
     {
         public string LeaderBoardName { get; set; }
         public string LeaderBoardDescription { get; set; }

@@ -117,7 +117,87 @@ namespace ProbaDotnetSDK.Client
         }
 
         #region Trophy
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<AchievementViewModel> remoteConfigurations)> GetAchievementsListAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/GetAchievementsList/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode, content.FromJson<IList<AchievementViewModel>>());
+                    return (sucess, statusCode, default);
 
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<LeaderBoardViewModel> remoteConfigurations)> GetLeaderBoardsListAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/GetLeaderboardsList/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode, content.FromJson<IList<LeaderBoardViewModel>>());
+                    return (sucess, statusCode, default);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserAchievementViewModel> remoteConfigurations)> GetUserAchievementsAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/GetUserAchievements/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode, content.FromJson<IList<UserAchievementViewModel>>());
+                    return (sucess, statusCode, default);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserLeaderBoardViewModel> remoteConfigurations)> GetUserLeaderBoardsAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/GetUserLeaderBoards/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode, content.FromJson<IList<UserLeaderBoardViewModel>>());
+                    return (sucess, statusCode, default);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode, default);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         #endregion
 
         #region Events

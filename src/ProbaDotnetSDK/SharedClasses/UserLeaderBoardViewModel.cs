@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProbaDotnetSDK.SharedClasses
 {
-    public class UserLeaderBoard
+    public class UserLeaderBoardViewModel
     {
         public Guid LeaderBoardId { get; set; }
         public long Score { get; set; }

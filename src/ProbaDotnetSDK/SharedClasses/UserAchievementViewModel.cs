@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProbaDotnetSDK.SharedClasses
 {
-    public class UserAchievement
+    public class UserAchievementViewModel
     {     
         public Guid AchievementId { get; set; }   
         public long Score { get; set; }      

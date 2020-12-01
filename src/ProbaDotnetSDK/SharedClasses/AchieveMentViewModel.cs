@@ -4,10 +4,9 @@ using System.Text;
 
 namespace ProbaDotnetSDK.SharedClasses
 {
-    public class AchieveMentViewModel
+    public class AchievementViewModel
     {
         public string AchievementName { get; set; }
-
         public string AchievementDescription { get; set; }
         public Dictionary<int, string> Icons { get; set; }
         public bool Incrimental { get; set; }
