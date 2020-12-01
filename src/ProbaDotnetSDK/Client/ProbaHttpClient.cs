@@ -36,6 +36,7 @@ namespace ProbaDotnetSDK.Client
         private string APIVersion => Configuration.CurrentAPIVersion;
         private string BaseURL => Configuration.BaseURL;
 
+
         public async Task<(bool sucess, HttpStatusCode statusCode, RegisterResponseViewModel sessionResponse)> RegisterAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
             try
@@ -115,6 +116,11 @@ namespace ProbaDotnetSDK.Client
             }
         }
 
+        #region Trophy
+
+        #endregion
+
+        #region Events
         public async Task<(bool sucess, HttpStatusCode statusCode, CreateSessionResponseModel sessionResponse)> StartSessionAsync(StartSessionViewModel startSessionViewModel)
         {
             try
@@ -294,6 +300,6 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
+        #endregion
     }
 }
