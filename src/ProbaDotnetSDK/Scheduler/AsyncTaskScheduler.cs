@@ -62,7 +62,7 @@ namespace ProbaDotnetSDK.Scheduler
         public async void StartAsync()
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
-            if (Finalized) throw new InvalidOperationException("This object had been finalized.");
+            //if (Finalized) throw new InvalidOperationException("This object had been finalized.");
 
             while (!CancellationTokenSource.Token.IsCancellationRequested)
             {
