@@ -36,7 +36,7 @@ namespace ProbaDotnetSDK
         private static AsyncTaskScheduler AsyncTaskScheduler { get; set; }
         private static string UserName { get; set; }
         private static bool NewUser { get; set; }
-        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "", bool newUser = false)
+        public static async Task InitializeAsync(string projectId, string secretKey, string userName = "", bool newUser = true)
         {
             LoggerFactory = new LoggerFactory();
             ConfigurationProvider = new ConfigurationProvider();
