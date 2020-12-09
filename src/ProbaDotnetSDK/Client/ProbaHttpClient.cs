@@ -198,6 +198,47 @@ namespace ProbaDotnetSDK.Client
             }
         }
 
+        public async Task<(bool sucess, HttpStatusCode statusCode)> AddNewLeaderBoardScoreAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/AddNewLeaderBoardScore/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode);
+                    return (sucess, statusCode);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<(bool sucess, HttpStatusCode statusCode)> AddUserNewAchievementAsync(TrophyRequest trophyRequest)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Trophies/UserNewAchievement/{ProjectId}", trophyRequest.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode);
+                    return (sucess, statusCode);
+
+                }
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         #endregion
 
         #region Events
