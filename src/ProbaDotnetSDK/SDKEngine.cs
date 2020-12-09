@@ -128,8 +128,7 @@ namespace ProbaDotnetSDK
             }
             return default;
         }
-
-        public static async Task UpdateUserInfo ()
+        public static async Task UpdateUserInfo()
         {
             var eventData = new BaseEventDataViewModel();
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
@@ -200,7 +199,115 @@ namespace ProbaDotnetSDK
         #endregion
 
         #region Trophy
+        public static async Task<IList<AchievementViewModel>> GetAchievementsList()
+        {
+            var request = new TrophyRequest();
+            try
+            {
+                var (sucess, statusCode, achievements) = await ProbaHttpClient.GetAchievementsListAsync(request);
+                if (!sucess)
+                {
+                }
+                return achievements;
+            }
 
+            catch { }
+            return default;
+        }
+        public static async Task<IList<LeaderBoardViewModel>> GetLeaderBoardsList()
+        {
+            var request = new TrophyRequest();
+            try
+            {
+                var (sucess, statusCode, leaderBoards) = await ProbaHttpClient.GetLeaderBoardsListAsync(request);
+                if (!sucess)
+                {
+                }
+                return leaderBoards;
+            }
+
+            catch { }
+            return default;
+        }
+        public static async Task<IList<UserAchievementViewModel>> GetUserAchievements()
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+
+            var request = new TrophyRequest
+            {
+                UserId = UserId
+            };
+            try
+            {
+                var (sucess, statusCode, userAchievements) = await ProbaHttpClient.GetUserAchievementsAsync(request);
+                if (!sucess)
+                {
+                }
+                return userAchievements;
+            }
+
+            catch { }
+            return default;
+        }
+        public static async Task<IList<UserLeaderBoardViewModel>> GetUserLeaderBoardsAsync(bool self, Guid leaderBoardId)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+
+            var request = new TrophyRequest
+            {
+                LeaderBoardId = leaderBoardId,
+                UserId = self ? UserId : default
+            };
+            try
+            {
+                var (sucess, statusCode, userLeaderBoards) = await ProbaHttpClient.GetUserLeaderBoardsAsync(request);
+                if (!sucess)
+                {
+                }
+                return userLeaderBoards;
+            }
+
+            catch { }
+            return default;
+        }
+        public static async Task NewLeaderBoardScore(Guid leaderBoardId, long Score, string userName = "")
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            var request = new TrophyRequest()
+            {
+                UserId = UserId,
+                LeaderBoardId = leaderBoardId,
+                UserName = string.IsNullOrWhiteSpace(userName) ? UserName : userName,
+                ThrophyScore = Score
+            };
+            var job = new TaskOrder
+            {
+                TrophyData = request,
+                Type = TaskType.SubmitNewLeaderBoardScore
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
+        public static async Task UserNewAchievement(Guid achievementId, long Score, int achievementStep)
+        {
+            await EnsureSessionAsync();
+            if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
+            var request = new TrophyRequest()
+            {
+                UserId = UserId,
+                AchievementId = achievementId,
+                ThrophyScore = Score,
+                AchievementStep = achievementStep
+            };
+            var job = new TaskOrder
+            {
+                TrophyData = request,
+                Type = TaskType.SubmitNewAchievement
+            };
+            AsyncTaskScheduler.Schedule(job);
+        }
         #endregion
 
         #region Events

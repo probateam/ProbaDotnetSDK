@@ -15,6 +15,8 @@ namespace ProbaDotnetSDK.Scheduler
         SendProgressionEvent,
         SendSocialEvent,
         SendTapEvent,
+        SubmitNewLeaderBoardScore,
+        SubmitNewAchievement,
         Wait
     }
     internal class TaskOrder
@@ -28,5 +30,6 @@ namespace ProbaDotnetSDK.Scheduler
         public ProgressionEventViewModel Progression { get; set; }
         public SocialEventViewModel Social { get; set; }
         public TapEventViewModel Tap { get; set; }
+        public TrophyRequest TrophyData { get; set; }
     }
 }

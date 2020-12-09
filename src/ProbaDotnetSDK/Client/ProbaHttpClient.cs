@@ -136,7 +136,7 @@ namespace ProbaDotnetSDK.Client
         #endregion
 
         #region Trophy
-        public async Task<(bool sucess, HttpStatusCode statusCode, IList<AchievementViewModel> remoteConfigurations)> GetAchievementsListAsync(TrophyRequest trophyRequest)
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<AchievementViewModel> achievements)> GetAchievementsListAsync(TrophyRequest trophyRequest)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-        public async Task<(bool sucess, HttpStatusCode statusCode, IList<LeaderBoardViewModel> remoteConfigurations)> GetLeaderBoardsListAsync(TrophyRequest trophyRequest)
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<LeaderBoardViewModel> leaderBoards)> GetLeaderBoardsListAsync(TrophyRequest trophyRequest)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserAchievementViewModel> remoteConfigurations)> GetUserAchievementsAsync(TrophyRequest trophyRequest)
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserAchievementViewModel> userAchievements)> GetUserAchievementsAsync(TrophyRequest trophyRequest)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserLeaderBoardViewModel> remoteConfigurations)> GetUserLeaderBoardsAsync(TrophyRequest trophyRequest)
+        public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserLeaderBoardViewModel> userLeaderBoards)> GetUserLeaderBoardsAsync(TrophyRequest trophyRequest)
         {
             try
             {

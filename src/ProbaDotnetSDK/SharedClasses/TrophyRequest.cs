@@ -6,6 +6,10 @@ namespace ProbaDotnetSDK.SharedClasses
 {
     public class TrophyRequest
     {
+        public TrophyRequest()
+        {
+            Nonce = Guid.NewGuid().ToString()
+        }
         public string Nonce { get; set; }
         public Guid UserId { get; set; }
 

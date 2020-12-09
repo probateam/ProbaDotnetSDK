@@ -95,6 +95,12 @@ namespace ProbaDotnetSDK.Scheduler
                         case TaskType.SendTapEvent:
                             (sucess, statusCode) = await ProbaClient.SendTapEventAsync(job.Tap);
                             break;
+                        case TaskType.SubmitNewAchievement:
+                            (sucess, statusCode) = await ProbaClient.AddUserNewAchievementAsync(job.TrophyData);
+                            break;
+                        case TaskType.SubmitNewLeaderBoardScore:
+                            (sucess, statusCode) = await ProbaClient.AddNewLeaderBoardScoreAsync(job.TrophyData);
+                            break;
                         case TaskType.Wait:
                             await Task.Delay(DelayTime);
                             (sucess, statusCode) = (true, HttpStatusCode.NotFound);
