@@ -33,10 +33,13 @@ namespace ProbaDotnetSDK.Scheduler
             Exceptions = new List<Exception>();
             Initialized = true;
             Responses = new List<(int count, bool success, HttpStatusCode statusCode)>();
-            Finalized = false;
+            Finalized = true;
             DelayTime = delayTime;
         }
-
+        public void StartSession()
+        {
+            Finalized = false;
+        }
         public void Schedule(TaskOrder order)
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");

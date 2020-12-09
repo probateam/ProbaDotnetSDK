@@ -340,6 +340,7 @@ namespace ProbaDotnetSDK
                 user.HasActiveSession = true;
                 user.CurrentSessionLocation = sessionResponse.Location;
                 UnitOfWork.BasicData.Update(user);
+                AsyncTaskScheduler.StartSession();
             }
             catch (Exception)
             {
