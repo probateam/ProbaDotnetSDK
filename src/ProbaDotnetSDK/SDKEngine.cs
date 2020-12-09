@@ -128,6 +128,22 @@ namespace ProbaDotnetSDK
             }
             return default;
         }
+
+        public static async Task UpdateUserInfo ()
+        {
+            var eventData = new BaseEventDataViewModel();
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            eventData.UserName = UserName;
+            try
+            {
+                var (sucess, statusCode) = await ProbaHttpClient.UpdateUserInfoAsync(eventData);
+                if (!sucess)
+                {
+                }
+            }
+
+            catch { }
+        }
         public static async Task SaveUserProgress(string progress, string configurations)
         {
             var eventData = new ProgressViewModel();
