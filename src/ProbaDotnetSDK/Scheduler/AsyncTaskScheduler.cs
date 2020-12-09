@@ -33,12 +33,8 @@ namespace ProbaDotnetSDK.Scheduler
             Exceptions = new List<Exception>();
             Initialized = true;
             Responses = new List<(int count, bool success, HttpStatusCode statusCode)>();
-            Finalized = true;
-            DelayTime = delayTime;
-        }
-        public void StartSession()
-        {
             Finalized = false;
+            DelayTime = delayTime;
         }
         public void Schedule(TaskOrder order)
         {
@@ -62,7 +58,7 @@ namespace ProbaDotnetSDK.Scheduler
         public async void StartAsync()
         {
             if (!Initialized) throw new InvalidOperationException("You need to initilize the object first.");
-            //if (Finalized) throw new InvalidOperationException("This object had been finalized.");
+            if (Finalized) throw new InvalidOperationException("This object had been finalized.");
 
             while (!CancellationTokenSource.Token.IsCancellationRequested)
             {

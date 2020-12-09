@@ -340,7 +340,6 @@ namespace ProbaDotnetSDK
                 user.HasActiveSession = true;
                 user.CurrentSessionLocation = sessionResponse.Location;
                 UnitOfWork.BasicData.Update(user);
-                AsyncTaskScheduler.StartSession();
             }
             catch (Exception)
             {
@@ -520,6 +519,12 @@ namespace ProbaDotnetSDK
         }
         public static void Dispose()
         {
+            var user = EnsureUserCreated();
+            if (!user.HasActiveSession)
+            {
+                CancellationTokenSource?.Cancel();
+                _ = AsyncTaskScheduler.Finalize();
+            }
             AsyncTaskScheduler?.Dispose();
             UnitOfWork?.Dispose();
             mainClient?.Dispose();
