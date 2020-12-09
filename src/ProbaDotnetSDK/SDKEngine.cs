@@ -74,7 +74,7 @@ namespace ProbaDotnetSDK
             UserName = user.CurrentUserName;
             return user;
         }
-
+        public static void RemoveDb() => UnitOfWork?.DropDataBase();
         private static async Task EnsureSessionAsync()
         {
             if (ActiveSession) return;
@@ -128,7 +128,7 @@ namespace ProbaDotnetSDK
             }
             return default;
         }
-        public static async Task UpdateUserInfo()
+        public static async Task UpdateUserInfoAsync()
         {
             var eventData = new BaseEventDataViewModel();
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
@@ -143,7 +143,7 @@ namespace ProbaDotnetSDK
 
             catch { }
         }
-        public static async Task SaveUserProgress(string progress, string configurations)
+        public static async Task SaveUserProgressAsync(string progress, string configurations)
         {
             var eventData = new ProgressViewModel();
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
@@ -180,7 +180,7 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
-        public static async Task<(string progress, string configurations)> GetUserData()
+        public static async Task<(string progress, string configurations)> GetUserDataAsync()
         {
             var eventData = new ProgressViewModel();
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
@@ -199,7 +199,7 @@ namespace ProbaDotnetSDK
         #endregion
 
         #region Trophy
-        public static async Task<IList<AchievementViewModel>> GetAchievementsList()
+        public static async Task<IList<AchievementViewModel>> GetAchievementsListAsync()
         {
             var request = new TrophyRequest();
             try
@@ -214,7 +214,7 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
-        public static async Task<IList<LeaderBoardViewModel>> GetLeaderBoardsList()
+        public static async Task<IList<LeaderBoardViewModel>> GetLeaderBoardsListAsync()
         {
             var request = new TrophyRequest();
             try
@@ -229,7 +229,7 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
-        public static async Task<IList<UserAchievementViewModel>> GetUserAchievements()
+        public static async Task<IList<UserAchievementViewModel>> GetUserAchievementsAsync()
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
@@ -272,7 +272,7 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
-        public static async Task NewLeaderBoardScore(Guid leaderBoardId, long Score, string userName = "")
+        public static async Task NewLeaderBoardScoreAsync(Guid leaderBoardId, long Score, string userName = "")
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
@@ -290,7 +290,7 @@ namespace ProbaDotnetSDK
             };
             AsyncTaskScheduler.Schedule(job);
         }
-        public static async Task UserNewAchievement(Guid achievementId, long Score, int achievementStep)
+        public static async Task UserNewAchievementAsync(Guid achievementId, long Score, int achievementStep)
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
