@@ -89,6 +89,7 @@ namespace ProbaDotnetSDK
             await StartSessionAsync();
         }
 
+        #region Account
         private static async Task<(string progress, string configurations)> RegisterAsync()
         {
             var user = EnsureUserCreated();
@@ -127,7 +128,6 @@ namespace ProbaDotnetSDK
             }
             return default;
         }
-
         public static async Task SaveUserProgress(string progress, string configurations)
         {
             var eventData = new ProgressViewModel();
@@ -144,7 +144,27 @@ namespace ProbaDotnetSDK
 
             catch { }
         }
+        public static async Task<IList<RemoteConfigurationsViewModel>> GetRemoteConfigAsync()
+        {
+            var eventData = new BaseEventDataViewModel();
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            try
+            {
+                var (sucess, statusCode, remoteConfigurations) = await ProbaHttpClient.GetRemoteConfigurationsAsync(eventData);
+                if (!sucess)
+                {
+                }
+                var rm = new RemotoConfigurationModel
+                {
+                    RemotoConfigurations = remoteConfigurations
+                };
+                UnitOfWork.RemoteConfigurations.Insert(rm);
+                return (remoteConfigurations);
+            }
 
+            catch { }
+            return default;
+        }
         public static async Task<(string progress, string configurations)> GetUserData()
         {
             var eventData = new ProgressViewModel();
@@ -161,7 +181,13 @@ namespace ProbaDotnetSDK
             catch { }
             return default;
         }
+        #endregion
 
+        #region Trophy
+
+        #endregion
+
+        #region Events
         public static async Task StartSessionAsync()
         {
             if (ActiveSession) throw new InvalidOperationException("An open session exist, you need to close it first.");
@@ -246,27 +272,6 @@ namespace ProbaDotnetSDK
             {
                 //TODO save in databse
             }
-        }
-        public static async Task<IList<RemoteConfigurationsViewModel>> GetRemoteConfigAsync()
-        {
-            var eventData = new BaseEventDataViewModel();
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
-            try
-            {
-                var (sucess, statusCode, remoteConfigurations) = await ProbaHttpClient.GetRemoteConfigurationsAsync(eventData);
-                if (!sucess)
-                {
-                }
-                var rm = new RemotoConfigurationModel
-                {
-                    RemotoConfigurations = remoteConfigurations
-                };
-                UnitOfWork.RemoteConfigurations.Insert(rm);
-                return (remoteConfigurations);
-            }
-
-            catch { }
-            return default;
         }
         public static async Task SendAchievementEventAsync(AchievementEventViewModel eventData)
         {
@@ -372,6 +377,7 @@ namespace ProbaDotnetSDK
             };
             AsyncTaskScheduler.Schedule(job);
         }
+        #endregion
         public static async Task<bool> IsConnectedToInternet(bool sendPing = true)
         {
             if (NetworkInterface.GetIsNetworkAvailable())
@@ -388,7 +394,6 @@ namespace ProbaDotnetSDK
             }
             return false;
         }
-
         public static void Dispose()
         {
             AsyncTaskScheduler?.Dispose();

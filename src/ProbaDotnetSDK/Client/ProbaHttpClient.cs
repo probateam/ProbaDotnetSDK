@@ -36,12 +36,12 @@ namespace ProbaDotnetSDK.Client
         private string APIVersion => Configuration.CurrentAPIVersion;
         private string BaseURL => Configuration.BaseURL;
 
-
+        #region Account
         public async Task<(bool sucess, HttpStatusCode statusCode, RegisterResponseViewModel sessionResponse)> RegisterAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/Register/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Account/Register/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
                 if (sucess)
                 {
                     var res = content.FromJson<RegisterResponseViewModel>();
@@ -57,14 +57,33 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
+        public async Task<(bool sucess, HttpStatusCode statusCode)> UpdateUserInfoAsync(BaseEventDataViewModel baseEventDataViewModel)
+        {
+            try
+            {
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Account/UpdateUserInfo/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                if (sucess)
+                {
+                    if (statusCode == HttpStatusCode.OK)
+                        return (sucess, statusCode);
+                    return (sucess, statusCode);
 
+                }
+                //TODO: handdle errors
+                return (default, statusCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<(bool sucess, HttpStatusCode statusCode)> SaveUserProgressAsync(ProgressViewModel progress)
         {
             try
             {
                 progress.Progress = progress.Progress.FromUTF8().ToBase64String();
                 progress.Configurations = progress.Configurations.FromUTF8().ToBase64String();
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/UpdateUserProgress/{ProjectId}", progress.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Account/UpdateUserProgress/{ProjectId}", progress.ToJson(), CancellationTokenSource);
                 if (sucess) return (sucess, statusCode);
                 //TODO: handdle errors
                 return (default, statusCode);
@@ -74,12 +93,11 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
         public async Task<(bool sucess, HttpStatusCode statusCode, RegisterResponseViewModel sessionResponse)> GetUserDataAsync(BaseEventDataViewModel baseEventDataViewModel)
         {
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/GetUserData/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Account/GetUserData/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
                 if (sucess)
                 {
                     var res = content.FromJson<RegisterResponseViewModel>();
@@ -99,7 +117,7 @@ namespace ProbaDotnetSDK.Client
         {
             try
             {
-                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Events/RemoteConfigurations/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
+                var (sucess, statusCode, content) = await PostJsonRequestAsync($"{BaseURL}/{APIVersion}/Account/RemoteConfigurations/{ProjectId}", baseEventDataViewModel.ToJson(), CancellationTokenSource);
                 if (sucess)
                 {
                     if (statusCode == HttpStatusCode.OK)
@@ -115,6 +133,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
+        #endregion
 
         #region Trophy
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<AchievementViewModel> remoteConfigurations)> GetAchievementsListAsync(TrophyRequest trophyRequest)
@@ -197,7 +216,6 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
         public async Task<(bool sucess, HttpStatusCode statusCode)> AddNewLeaderBoardScoreAsync(TrophyRequest trophyRequest)
         {
             try
@@ -218,7 +236,6 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
         public async Task<(bool sucess, HttpStatusCode statusCode)> AddUserNewAchievementAsync(TrophyRequest trophyRequest)
         {
             try
@@ -396,7 +413,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
+        #endregion
         private async Task<(bool sucess, HttpStatusCode statusCode, string content)> PostJsonRequestAsync(string url, string message, CancellationTokenSource cts)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url)
@@ -421,6 +438,5 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-        #endregion
     }
 }
