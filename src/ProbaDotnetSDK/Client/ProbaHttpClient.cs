@@ -177,7 +177,6 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
-
         public async Task<(bool sucess, HttpStatusCode statusCode, IList<UserLeaderBoardViewModel> remoteConfigurations)> GetUserLeaderBoardsAsync(TrophyRequest trophyRequest)
         {
             try
@@ -198,6 +197,7 @@ namespace ProbaDotnetSDK.Client
                 throw;
             }
         }
+
         #endregion
 
         #region Events
