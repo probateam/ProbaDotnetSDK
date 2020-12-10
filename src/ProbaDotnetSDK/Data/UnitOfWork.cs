@@ -12,7 +12,7 @@ namespace ProbaDotnetSDK.Data
     {
         private LiteDatabase LiteDatabase { get; }
         private ILogger Logger { get; }
-        private string DbPath { get; } = "./sdkdb.db";
+        private static string DbPath { get; } = "./sdkdb.db";
         public UnitOfWork(ILogger logger)
         {
             LiteDatabase = new LiteDatabase(DbPath);
@@ -21,7 +21,7 @@ namespace ProbaDotnetSDK.Data
             SessionsData = LiteDatabase.GetCollection<SessionData>();
             RemoteConfigurations = LiteDatabase.GetCollection<RemotoConfigurationModel>();
         }
-        public void DropDataBase()
+        public static void DropDataBase()
         {
             if (File.Exists(DbPath))
                 File.Delete(DbPath);

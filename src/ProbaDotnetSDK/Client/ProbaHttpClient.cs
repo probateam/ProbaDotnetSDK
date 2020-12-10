@@ -45,8 +45,8 @@ namespace ProbaDotnetSDK.Client
                 if (sucess)
                 {
                     var res = content.FromJson<RegisterResponseViewModel>();
-                    if (string.IsNullOrWhiteSpace(res.Progress)) res.Progress = res.Progress.FromBase64String().ToUTF8();
-                    if (string.IsNullOrWhiteSpace(res.Configurations)) res.Configurations = res.Configurations.FromBase64String().ToUTF8();
+                    if (!string.IsNullOrWhiteSpace(res.Progress)) res.Progress = res.Progress.FromBase64String().ToUTF8();
+                    if (!string.IsNullOrWhiteSpace(res.Configurations)) res.Configurations = res.Configurations.FromBase64String().ToUTF8();
                     return (sucess, statusCode, res);
                 }
                 //TODO: handdle errors

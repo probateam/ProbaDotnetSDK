@@ -74,7 +74,7 @@ namespace ProbaDotnetSDK
             UserName = user.CurrentUserName;
             return user;
         }
-        public static void RemoveDb() => UnitOfWork?.DropDataBase();
+        public static void DropDataBase() => UnitOfWork.DropDataBase();
         private static async Task EnsureSessionAsync()
         {
             if (ActiveSession) return;
@@ -283,12 +283,15 @@ namespace ProbaDotnetSDK
                 UserName = string.IsNullOrWhiteSpace(userName) ? UserName : userName,
                 ThrophyScore = Score
             };
-            var job = new TaskOrder
+            try
             {
-                TrophyData = request,
-                Type = TaskType.SubmitNewLeaderBoardScore
-            };
-            AsyncTaskScheduler.Schedule(job);
+                var (sucess, statusCode) = await ProbaHttpClient.AddNewLeaderBoardScoreAsync(request);
+                if (!sucess)
+                {
+                }
+            }
+
+            catch { }
         }
         public static async Task UserNewAchievementAsync(Guid achievementId, long Score, int achievementStep)
         {
@@ -301,12 +304,15 @@ namespace ProbaDotnetSDK
                 ThrophyScore = Score,
                 AchievementStep = achievementStep
             };
-            var job = new TaskOrder
+            try
             {
-                TrophyData = request,
-                Type = TaskType.SubmitNewAchievement
-            };
-            AsyncTaskScheduler.Schedule(job);
+                var (sucess, statusCode) = await ProbaHttpClient.AddUserNewAchievementAsync(request);
+                if (!sucess)
+                {
+                }
+            }
+
+            catch { }
         }
         #endregion
 
@@ -520,7 +526,7 @@ namespace ProbaDotnetSDK
         public static void Dispose()
         {
             var user = EnsureUserCreated();
-            if (!user.HasActiveSession)
+            if (!user?.HasActiveSession ?? true)
             {
                 CancellationTokenSource?.Cancel();
                 _ = AsyncTaskScheduler.Finalize();

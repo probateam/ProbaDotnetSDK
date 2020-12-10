@@ -11,6 +11,7 @@ namespace ProbaDotnetSDK.SharedClasses
     }
     public class LeaderBoardViewModel
     {
+        public Guid Id { get; set; }
         public string LeaderBoardName { get; set; }
         public string LeaderBoardDescription { get; set; }
         public bool Descending { get; set; }
