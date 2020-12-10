@@ -6,6 +6,7 @@ namespace ProbaDotnetSDK.SharedClasses
 {
     public class AchievementViewModel
     {
+        public Guid Id { get; set; }
         public string AchievementName { get; set; }
         public string AchievementDescription { get; set; }
         public Dictionary<int, string> Icons { get; set; }
