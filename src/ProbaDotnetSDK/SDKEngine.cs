@@ -406,7 +406,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -419,7 +419,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -432,7 +432,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -445,7 +445,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -458,7 +458,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -471,7 +471,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -484,7 +484,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
@@ -497,7 +497,7 @@ namespace ProbaDotnetSDK
         {
             await EnsureSessionAsync();
             if (!ActiveSession) throw new InvalidOperationException("there is no active session available. you need to start a new session or load one.");
-            DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, eventData);
+            DeviceInfo.WriteBaseEventDataViewModel(UserId, SessionId, Class, eventData);
 
             var job = new TaskOrder
             {
