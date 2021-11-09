@@ -99,6 +99,7 @@ namespace ProbaDotnetSDK
 
             };
             DeviceInfo.WriteBaseEventDataViewModel(UserId, Guid.Empty, Class, evenData);
+            evenData.UniqueId += "2";
             evenData.UserName = UserName;
             evenData.NewUser = NewUser;
             try
@@ -107,6 +108,7 @@ namespace ProbaDotnetSDK
                 if (!sucess)
                 {
                     //TODO save in databse
+                    throw new Exception();
                 }
                 user = new BasicData
                 {
